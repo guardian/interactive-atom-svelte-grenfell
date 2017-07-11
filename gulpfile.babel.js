@@ -23,6 +23,12 @@ import webpack from 'webpack'
 import wsw from 'webpack2-stream-watch'
 const debug = require('gulp-debug');
 import through from 'through2'
+import sharp from 'sharp';
+import mkdirp from 'mkdirp';
+
+import { loadData } from './src/render'
+
+
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 const browser = browserSync.create();
@@ -142,17 +148,13 @@ gulp.task('build:js.main', buildJS('main.js'));
 gulp.task('build:js.app', buildJS('app.js'));
 gulp.task('build:js', ['build:js.main', 'build:js.app']);
 
-gulp.task('build:html', cb => {
+gulp.task('build:html', ['resize-images'], cb => {
     try {
         let render = requireUncached('./src/render.js').render;
 
         Promise.resolve(render()).then(html => {
-            file('main.html', html, {
-                    'src': true
-                })
-                .pipe(template({
-                    path
-                }))
+            file('main.html', html, {'src': true})
+                .pipe(template({path}))
                 .pipe(gulp.dest(buildDir))
                 .on('end', cb);
         }).catch(err => {
@@ -272,4 +274,26 @@ gulp.task('log', () => {
     }
 
     return Promise.all([log('live'), log('preview')]);
+});
+
+gulp.task('resize-images', async function () {
+    mkdirp("./.build/assets/images", async function() {
+        let data = await loadData();
+        console.log(data)
+
+        for (let i in data) {
+            if(data[i]["grid_photo"] !== "") {
+                let image = await rp({
+                    uri: data[i]["grid_photo"],
+                    encoding: null
+                });
+                //https://interactive.guim.co.uk/atoms/2017/06/interactive-atom-grenfell-victims/v/1499353826813/assets/images/MohammedAlhajali.jpg
+                sharp(image)
+                  .resize(200, 200)
+                  .toFile("./.build/assets/images/" + data[i].id + ".jpg", (err, info) => {
+                    if(err) console.log(err);
+                  });
+            }
+        }
+    });
 });

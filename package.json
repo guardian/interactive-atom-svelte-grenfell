@@ -51,6 +51,10 @@
     "webpack2-stream-watch": "^3.2.2"
   },
   "dependencies": {
-    "reqwest": "^2.0.5"
+    "handlebars": "^4.0.10",
+    "javascript-debounce": "^1.0.0",
+    "mkdirp": "^0.5.1",
+    "reqwest": "^2.0.5",
+    "sharp": "^0.18.2"
   }
 }
