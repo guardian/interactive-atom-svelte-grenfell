@@ -14,9 +14,6 @@ var isMobile;
 var isTablet;
 var isDesktop;
 
-
-
-
 function init() {
     detailOverlay = document.getElementById("detailOverlay");
     mainContainer = document.getElementById("gv-content-container");
@@ -26,7 +23,7 @@ function init() {
 
 function checkForScrollEnd() {
 
-    console.log("checkForScrollEnd")
+    //console.log("checkForScrollEnd")
     if (document.body.scrollTop >= (document.getElementById("gv-content-container").offsetTop + document.getElementById("gv-content-container").offsetHeight - 300))
     {
         detailOverlay.classList.remove('opened');
@@ -64,13 +61,12 @@ function adjustToWinSize(){
 
 
 function afterResize(){
-
     adjustToWinSize()
-
     addListeners() 
-
     detailOverlay.classList.remove('opened');
+
 }
+
 
 function addListeners() {
 
@@ -131,9 +127,14 @@ function openDetailContainer(el, elId) {
 
 
 function moveDetail(el, detailContainerEl) {
+
+    console.log(el)
     let sectionRef = (el.getAttribute("section-ref"));
 
     [].slice.apply(document.querySelectorAll('.main-list-bullet')).forEach(sectionEl => {
+
+        console.log(sectionEl.offsetTop)
+
         var elRef = sectionEl.getAttribute("section-ref");
         if (elRef == sectionRef) {
             detailScroll.classList.remove("add-border-bottom")

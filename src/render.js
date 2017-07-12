@@ -27,15 +27,15 @@ function formatData(data) {
         obj.ref = count;
         obj.formatName = obj.name.split(",")[0];
         obj.sortName = obj.family_name + obj.formatName;
-        obj.sortOn = obj.family_name.charAt(0).toUpperCase();
+        
         !obj.age ? obj.age = "unknown" : obj.age = obj.age.toString();
         !obj.status ? obj.status = "unknown" : obj.status = obj.status.toString().toLowerCase();
         !obj.floor ? obj.floor = "unknown" : obj.floor = obj.floor;
+        obj.sortOn = obj.floor;
+        //obj.sortOn = obj.family_name.charAt(0).toUpperCase();
         obj.ageGroup = getAgeGroup(obj.age);
 
         obj.id = obj.name.replace(/[^0-9a-z]/gi,'');
-
-        console.log(obj.floor);
 
         count++;
     })
@@ -148,29 +148,34 @@ function dataFormatForHTML(dataIn){
 
     });
 
-
-//console.log(statusArr)
-
     let statusArr = groupBy(dataIn, "status");
     statusArr = sortByKeys(statusArr);
     statusArr.map((obj) => {
         obj.count = obj.objArr.length;        
     });
 
+    let floorArr = groupBy(dataIn, 'floor');
+    floorArr = sortByKeys(floorArr);
+    floorArr.map((obj) => {
+        obj.count = obj.objArr.length;  
+
+    });
+
+
+   // console.log(floorArr)
 
     var data = {
         pageSections: sections,
         totalCount : totalCount,
         ageGroups : ageGroupArr,
-        statusCounts : statusArr
+        statusCounts : statusArr,
+        floorSections : floorArr
     }
 
     data.pageSections.map((obj) => {
         var last = obj.objArr.length - 1;
         obj.objArr[last].lastItem = true;
     })
-
-    
 
     var sortStr = data.pageSections[0].sortOn;
 
@@ -191,3 +196,4 @@ export async function loadData() {
 
     return data;
 }
+
